@@ -1,14 +1,18 @@
-import os
+import boto3
 from slack_bolt import App
 from slack_bolt.adapter.aws_lambda import SlackRequestHandler
 
 from slack import response_within_3sec
 from slack import handle_app_mention_events
 
+from ssm_utils import SSMUtils
+
+ssm_utils = SSMUtils()
+
 # Slackアプリの初期化
 app = App(
-    token=os.environ.get("SLACK_BOT_TOKEN"),
-    signing_secret=os.environ.get("SLACK_SIGNING_SECRET"),
+    token=ssm_utils.get_parameter("/slack/token"),
+    signing_secret=ssm_utils.get_parameter("/slack/secret"),
     process_before_response=True,
 )
 

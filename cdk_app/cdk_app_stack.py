@@ -19,18 +19,6 @@ class CdkAppStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
 
         """
-        Systems Manager
-        """
-        slack_token = ssm.StringParameter.value_for_string_parameter(
-            self,
-            "/slack/token",
-        )
-        slack_secret = ssm.StringParameter.value_for_string_parameter(
-            self,
-            "/slack/secret",
-        )
-
-        """
         Lambda
         """
         # Lambda Layer
@@ -48,11 +36,7 @@ class CdkAppStack(Stack):
             handler="index.handler",
             code=_lambda.Code.from_asset("./lambda_func/slack"),
             timeout=Duration.seconds(30),
-            layers=[common_layer],
-            environment={
-                "SLACK_BOT_TOKEN": slack_token,
-                "SLACK_SIGNING_SECRET": slack_secret,
-            }
+            layers=[common_layer]
         )
 
         slack_function.add_to_role_policy(
@@ -60,7 +44,6 @@ class CdkAppStack(Stack):
                 effect=iam.Effect.ALLOW,
                 actions=[
                     "bedrock:*",
-                    "dynamodb:*",
                     "lambda:InvokeFunction",
                     "ssm:GetParameter"
                 ],
@@ -80,17 +63,6 @@ class CdkAppStack(Stack):
 
         slack_events = api.root.add_resource("slack").add_resource("events")
         slack_events.add_method("POST", apigateway.LambdaIntegration(slack_function))
-
-
-        """
-        DynamoDB
-        """
-        table = dynamodb.Table(
-            self,
-            "SlackRAGChatCache",
-            partition_key={"name": "session_id", "type": dynamodb.AttributeType.STRING},
-            removal_policy=RemovalPolicy.DESTROY, 
-        )
         
         """
         Output
