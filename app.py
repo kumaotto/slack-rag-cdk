@@ -3,10 +3,10 @@ import os
 
 import aws_cdk as cdk
 
-from slack_rag_cdk.slack_rag_cdk_stack import SlackRagCdkStack
+from cdk_app.cdk_app_stack import CdkAppStack
 
 
 app = cdk.App()
-SlackRagCdkStack(app, "SlackRagCdkStack")
+CdkAppStack(app, "CdkAppStack")
 
 app.synth()

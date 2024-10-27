@@ -1,7 +1,7 @@
 import aws_cdk as core
 import aws_cdk.assertions as assertions
 
-from slack_rag_cdk.slack_rag_cdk_stack import SlackRagCdkStack
+from cdk_app.cdk_app_stack import SlackRagCdkStack
 
 # example tests. To run these tests, uncomment this file along with the example
 # resource in slack_rag_cdk/slack_rag_cdk_stack.py
