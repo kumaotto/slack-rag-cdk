@@ -1,3 +1,4 @@
+import json
 import boto3
 from slack_bolt import App
 from slack_bolt.adapter.aws_lambda import SlackRequestHandler
@@ -22,5 +23,15 @@ app.event("app_mention")(ack=response_within_3sec, lazy=[handle_app_mention_even
 
 # Lambda関数のエントリーポイント
 def handler(event, context):
+
+    # slackのチャレンジリクエスト用
+    body = json.loads(event["body"])
+    if body.get("type") == "url_verification":
+        return {
+            "statusCode": 200,
+            "headers": {"Content-Type": "application/json"},
+            "body": json.dumps({"challenge": body["challenge"]}),
+        }
+
     slack_handler = SlackRequestHandler(app=app)
     return slack_handler.handle(event, context)

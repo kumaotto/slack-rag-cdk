@@ -12,8 +12,7 @@ def response_within_3sec(ack, body):
 
 # Slackのイベントを処理する
 def handle_app_mention_events(event, say, ack):
-    ack()
-
+    
     # メンションされたメッセージからメンション以降のテキストを取得
     input_text = re.sub(r"^<@(.+?)>", "", event["text"]).strip()
     
