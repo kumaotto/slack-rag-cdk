@@ -33,20 +33,6 @@ def handle_app_mention_events(event, say, ack):
 # Amazon Bedrockを使って応答テキストを生成する
 def generate_answer(input_text):
 
-    # Bedrock用のシステムプロンプト
-    prompt_template = """
-        あなたは質問応答エージェントです。
-        こちらから検索結果を提供しますので、ユーザーからの質問に対して、検索結果の情報だけを用いて回答してください。
-        もし検索結果に質問の答えが見つからない場合は、「質問に対する正確な答えを見つけられませんでした」とお伝えください。
-        ユーザーが主張する内容が正しいと断定せず、必ず検索結果で裏付けを確認してください。
-        言語の指定がない場合は、日本語で回答してください。
-
-        検索結果:
-        $search_results$
-
-        $output_format_instructions$
-    """
-
     # Amazon Bedrock Knowledge Bases を呼び出す
     response = bedrock_agent_runtime.retrieve_and_generate(
         input={
@@ -61,7 +47,6 @@ def generate_answer(input_text):
                     "inferenceConfig": { 
                         "textInferenceConfig": { 
                             "maxTokens": 2048,
-                            "stopSequences": ["Observation"],
                             "temperature": 0,
                             "topP": 1
                         }
@@ -72,8 +57,8 @@ def generate_answer(input_text):
                         "numberOfResults": 12,
                     }
                 },
-                'knowledgeBaseId': "S0VOH8TM0Y",
-                'modelArn': "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-haiku-20240307-v1:0"
+                'knowledgeBaseId': "NHUZIKREQI",
+                'modelArn': "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-sonnet-20240307-v1:0"
             },
             'type': 'KNOWLEDGE_BASE'
         }
